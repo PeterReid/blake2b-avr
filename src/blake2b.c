@@ -290,7 +290,14 @@ int blake2b_update( blake2b_state *S, const uint8_t *in, uint64_t inlen )
       S->buflen += fill;
       blake2b_increment_counter( S, BLAKE2B_BLOCKBYTES );
       blake2b_compress( S, S->buf ); // Compress
-      memcpy( S->buf, S->buf + BLAKE2B_BLOCKBYTES, BLAKE2B_BLOCKBYTES ); // Shift buffer left
+	  ////
+      // memcpy( S->buf, S->buf + BLAKE2B_BLOCKBYTES, BLAKE2B_BLOCKBYTES ); // Shift buffer left
+	  // This memcpy causes gcc to error out:
+	  //   Error	3	unable to find a register to spill in class 'POINTER_REGS'
+	  // I replace it with this for loop.
+      for (uint8_t i=0; i<BLAKE2B_BLOCKBYTES; i++){
+		  S->buf[i] = S->buf[i+BLAKE2B_BLOCKBYTES];
+	  }
       S->buflen -= BLAKE2B_BLOCKBYTES;
       in += fill;
       inlen -= fill;
