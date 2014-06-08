@@ -246,20 +246,17 @@ static int blake2b_compress( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCK
   } while(0)
 
   for (uint8_t r=0; r<12; r++) {
-    G(r,0,v[ 0],v[ 4],v[ 8],v[12]);
-    G(r,1,v[ 1],v[ 5],v[ 9],v[13]);
-    G(r,2,v[ 2],v[ 6],v[10],v[14]);
-    G(r,3,v[ 3],v[ 7],v[11],v[15]);
-    G(r,4,v[ 0],v[ 5],v[10],v[15]);
-    G(r,5,v[ 1],v[ 6],v[11],v[12]);
-    G(r,6,v[ 2],v[ 7],v[ 8],v[13]);
-    G(r,7,v[ 3],v[ 4],v[ 9],v[14]);
+    for(uint8_t i=0; i<4; i++) {
+      G(r,i,v[i], v[4+i], v[8+i], v[12+i]);
+    }
+    for(uint8_t i=0; i<4; i++) {
+      G(r,i,v[i], v[4+((i+1)&3)], v[8+((i+2)&3)], v[12+((i+3)&3)]);
+    }
   }
   for( i = 0; i < 8; ++i )
     S->h[i] = S->h[i] ^ v[i] ^ v[i + 8];
 
 #undef G
-#undef ROUND
   return 0;
 }
 
