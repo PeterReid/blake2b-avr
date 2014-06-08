@@ -21,3 +21,8 @@
 *.i*86
 *.x86_64
 *.hex
+
+blake2b-avr.atsuo
+src/Debug/
+src/Release/
+
