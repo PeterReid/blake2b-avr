@@ -244,30 +244,17 @@ static int blake2b_compress( blake2b_state *S, const uint8_t block[BLAKE2B_BLOCK
     c = c + d; \
     b = rotr64(b ^ c, 63); \
   } while(0)
-#define ROUND(r)  \
-  do { \
-    G(r,0,v[ 0],v[ 4],v[ 8],v[12]); \
-    G(r,1,v[ 1],v[ 5],v[ 9],v[13]); \
-    G(r,2,v[ 2],v[ 6],v[10],v[14]); \
-    G(r,3,v[ 3],v[ 7],v[11],v[15]); \
-    G(r,4,v[ 0],v[ 5],v[10],v[15]); \
-    G(r,5,v[ 1],v[ 6],v[11],v[12]); \
-    G(r,6,v[ 2],v[ 7],v[ 8],v[13]); \
-    G(r,7,v[ 3],v[ 4],v[ 9],v[14]); \
-  } while(0)
-  ROUND( 0 );
-  ROUND( 1 );
-  ROUND( 2 );
-  ROUND( 3 );
-  ROUND( 4 );
-  ROUND( 5 );
-  ROUND( 6 );
-  ROUND( 7 );
-  ROUND( 8 );
-  ROUND( 9 );
-  ROUND( 10 );
-  ROUND( 11 );
 
+  for (uint8_t r=0; r<12; r++) {
+    G(r,0,v[ 0],v[ 4],v[ 8],v[12]);
+    G(r,1,v[ 1],v[ 5],v[ 9],v[13]);
+    G(r,2,v[ 2],v[ 6],v[10],v[14]);
+    G(r,3,v[ 3],v[ 7],v[11],v[15]);
+    G(r,4,v[ 0],v[ 5],v[10],v[15]);
+    G(r,5,v[ 1],v[ 6],v[11],v[12]);
+    G(r,6,v[ 2],v[ 7],v[ 8],v[13]);
+    G(r,7,v[ 3],v[ 4],v[ 9],v[14]);
+  }
   for( i = 0; i < 8; ++i )
     S->h[i] = S->h[i] ^ v[i] ^ v[i + 8];
 
